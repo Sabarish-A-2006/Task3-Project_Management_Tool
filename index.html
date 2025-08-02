@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Simple PM Tool</title>
+    <link rel="stylesheet" href="style.css" />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600&display=swap"
+      rel="stylesheet"
+    />
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css"
+    />
+  </head>
+  <body>
+    <div class="container">
+      <!-- Auth Section -->
+      <div class="auth-container" id="auth-container">
+        <h1>Simple PM Tool</h1>
+        <div class="auth-form">
+          <h2>Login</h2>
+          <input type="text" id="login-email" placeholder="Email" />
+          <input type="password" id="login-password" placeholder="Password" />
+          <button id="login-btn">Login</button>
+          <p>
+            Don't have an account? <a href="#" id="show-register">Register</a>
+          </p>
+        </div>
+
+        <div class="auth-form hidden" id="register-form">
+          <h2>Register</h2>
+          <input type="text" id="register-name" placeholder="Name" />
+          <input type="text" id="register-email" placeholder="Email" />
+          <input
+            type="password"
+            id="register-password"
+            placeholder="Password"
+          />
+          <button id="register-btn">Register</button>
+          <p>Already have an account? <a href="#" id="show-login">Login</a></p>
+        </div>
+      </div>
+
+      <!-- App Section (hidden initially) -->
+      <div class="app-container hidden" id="app-container">
+        <header>
+          <h1>My Projects</h1>
+          <div class="user-info">
+            <span id="username"></span>
+            <button id="logout-btn">Logout</button>
+          </div>
+        </header>
+
+        <div class="projects">
+          <button id="create-project-btn">+ New Project</button>
+          <div id="projects-list"></div>
+        </div>
+
+        <!-- Project Board (hidden initially) -->
+        <div class="project-board hidden" id="project-board">
+          <div class="board-header">
+            <h2 id="project-title">Project Title</h2>
+            <button id="back-to-projects">← Back to Projects</button>
+          </div>
+
+          <div class="board-columns" id="board-columns">
+            <!-- Columns will be added here -->
+          </div>
+        </div>
+      </div>
+
+      <!-- Modals -->
+      <div class="modal hidden" id="task-modal">
+        <div class="modal-content">
+          <h3 id="task-modal-title">Task Title</h3>
+          <textarea
+            id="task-description"
+            placeholder="Task description"
+          ></textarea>
+          <div class="modal-actions">
+            <button id="save-task-btn">Save</button>
+            <button id="close-task-modal">Close</button>
+          </div>
+        </div>
+      </div>
+
+      <div class="modal hidden" id="project-modal">
+        <div class="modal-content">
+          <h3>Create New Project</h3>
+          <input type="text" id="project-name" placeholder="Project name" />
+          <div class="modal-actions">
+            <button id="save-project-btn">Create</button>
+            <button id="close-project-modal">Cancel</button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <script src="script.js"></script>
+  </body>
+</html>
