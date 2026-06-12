@@ -67,7 +67,7 @@ loginBtn.addEventListener("click", handleLogin);
 registerBtn.addEventListener("click", handleRegister);
 logoutBtn.addEventListener("click", handleLogout);
 createProjectBtn.addEventListener("click", () =>
-  projectModal.classList.remove("hidden")
+  projectModal.classList.remove("hidden"),
 );
 backToProjects.addEventListener("click", showProjectsView);
 document
@@ -86,7 +86,7 @@ function handleLogin() {
   const password = document.getElementById("login-password").value;
 
   const user = db.users.find(
-    (u) => u.email === email && u.password === password
+    (u) => u.email === email && u.password === password,
   );
 
   if (user) {
@@ -148,7 +148,7 @@ function renderProjects() {
   if (!db.currentUser) return;
 
   const userProjects = db.projects.filter(
-    (p) => p.userId === db.currentUser.id
+    (p) => p.userId === db.currentUser.id,
   );
 
   if (userProjects.length === 0) {
@@ -164,16 +164,16 @@ function renderProjects() {
             <h3>${project.name}</h3>
             <p>${project.columns.reduce(
               (acc, col) => acc + col.tasks.length,
-              0
+              0,
             )} tasks</p>
         </div>
-    `
+    `,
     )
     .join("");
 
   document.querySelectorAll(".project-card").forEach((card) => {
     card.addEventListener("click", () =>
-      openProject(parseInt(card.getAttribute("data-id")))
+      openProject(parseInt(card.getAttribute("data-id"))),
     );
   });
 }
@@ -205,7 +205,7 @@ function renderBoardColumns() {
                         <h4>${task.title}</h4>
                         <p>${task.description || ""}</p>
                     </div>
-                `
+                `,
                   )
                   .join("")}
                 <button class="add-task-btn" data-column-id="${
@@ -213,14 +213,14 @@ function renderBoardColumns() {
                 }">+ Add Task</button>
             </div>
         </div>
-    `
+    `,
     )
     .join("");
 
   // Add event listeners to task cards
   document.querySelectorAll(".task-card").forEach((card) => {
     card.addEventListener("click", () =>
-      openTaskModal(parseInt(card.getAttribute("data-id")))
+      openTaskModal(parseInt(card.getAttribute("data-id"))),
     );
   });
 

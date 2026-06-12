@@ -150,7 +150,9 @@ header {
   border-radius: var(--border-radius);
   padding: 15px;
   cursor: pointer;
-  transition: transform 0.2s, box-shadow 0.2s;
+  transition:
+    transform 0.2s,
+    box-shadow 0.2s;
 }
 
 .project-card:hover {
