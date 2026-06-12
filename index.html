@@ -3,10 +3,10 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Simple PM Tool</title>
+    <title>ProjectFlow - Project Management Tool</title>
     <link rel="stylesheet" href="style.css" />
     <link
-      href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600&display=swap"
+      href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap"
       rel="stylesheet"
     />
     <link
@@ -15,86 +15,389 @@
     />
   </head>
   <body>
-    <div class="container">
-      <!-- Auth Section -->
-      <div class="auth-container" id="auth-container">
-        <h1>Simple PM Tool</h1>
-        <div class="auth-form">
+    <div class="app-shell">
+      <section class="auth-container" id="auth-container">
+        <div class="brand-lockup">
+          <span class="brand-mark"
+            ><i class="fa-solid fa-diagram-project"></i
+          ></span>
+          <div>
+            <h1>ProjectFlow</h1>
+            <p>Plan work, track progress, and keep delivery visible.</p>
+          </div>
+        </div>
+
+        <div class="auth-form" id="login-form">
           <h2>Login</h2>
-          <input type="text" id="login-email" placeholder="Email" />
-          <input type="password" id="login-password" placeholder="Password" />
-          <button id="login-btn">Login</button>
-          <p>
-            Don't have an account? <a href="#" id="show-register">Register</a>
-          </p>
+          <label>
+            Email
+            <input type="email" id="login-email" value="john@example.com" />
+          </label>
+          <label>
+            Password
+            <input type="password" id="login-password" value="123456" />
+          </label>
+          <button id="login-btn" class="primary-btn">
+            <i class="fa-solid fa-right-to-bracket"></i>
+            Login
+          </button>
+          <p>Need an account? <a href="#" id="show-register">Register</a></p>
         </div>
 
         <div class="auth-form hidden" id="register-form">
           <h2>Register</h2>
-          <input type="text" id="register-name" placeholder="Name" />
-          <input type="text" id="register-email" placeholder="Email" />
-          <input
-            type="password"
-            id="register-password"
-            placeholder="Password"
-          />
-          <button id="register-btn">Register</button>
-          <p>Already have an account? <a href="#" id="show-login">Login</a></p>
+          <label>
+            Name
+            <input type="text" id="register-name" placeholder="Your name" />
+          </label>
+          <label>
+            Email
+            <input
+              type="email"
+              id="register-email"
+              placeholder="you@example.com"
+            />
+          </label>
+          <label>
+            Password
+            <input
+              type="password"
+              id="register-password"
+              placeholder="Create a password"
+            />
+          </label>
+          <button id="register-btn" class="primary-btn">
+            <i class="fa-solid fa-user-plus"></i>
+            Register
+          </button>
+          <p>Already registered? <a href="#" id="show-login">Login</a></p>
         </div>
-      </div>
+      </section>
 
-      <!-- App Section (hidden initially) -->
-      <div class="app-container hidden" id="app-container">
-        <header>
-          <h1>My Projects</h1>
-          <div class="user-info">
+      <main class="app-container hidden" id="app-container">
+        <aside class="sidebar">
+          <div class="brand-lockup compact">
+            <span class="brand-mark"
+              ><i class="fa-solid fa-diagram-project"></i
+            ></span>
+            <h1>ProjectFlow</h1>
+          </div>
+          <nav>
+            <button class="nav-link active" data-view="projects">
+              <i class="fa-solid fa-table-columns"></i>
+              Projects
+            </button>
+            <button class="nav-link" data-view="reports">
+              <i class="fa-solid fa-chart-line"></i>
+              Reports
+            </button>
+          </nav>
+          <div class="user-panel">
             <span id="username"></span>
-            <button id="logout-btn">Logout</button>
+            <button id="logout-btn" class="ghost-btn">
+              <i class="fa-solid fa-arrow-right-from-bracket"></i>
+              Logout
+            </button>
           </div>
-        </header>
+        </aside>
 
-        <div class="projects">
-          <button id="create-project-btn">+ New Project</button>
-          <div id="projects-list"></div>
-        </div>
+        <section class="workspace">
+          <header class="topbar">
+            <div>
+              <p class="eyebrow" id="view-eyebrow">Workspace</p>
+              <h2 id="view-title">Project Dashboard</h2>
+            </div>
+            <div class="topbar-actions">
+              <button id="export-data-btn" class="secondary-btn">
+                <i class="fa-solid fa-download"></i>
+                Export
+              </button>
+              <button id="create-project-btn" class="primary-btn">
+                <i class="fa-solid fa-plus"></i>
+                Project
+              </button>
+            </div>
+          </header>
 
-        <!-- Project Board (hidden initially) -->
-        <div class="project-board hidden" id="project-board">
-          <div class="board-header">
-            <h2 id="project-title">Project Title</h2>
-            <button id="back-to-projects">← Back to Projects</button>
+          <section class="dashboard" id="projects-view">
+            <div class="stats-grid" id="workspace-stats"></div>
+            <div class="toolbar">
+              <label class="search-field">
+                <i class="fa-solid fa-magnifying-glass"></i>
+                <input
+                  type="search"
+                  id="project-search"
+                  placeholder="Search projects"
+                />
+              </label>
+              <select
+                id="project-status-filter"
+                aria-label="Filter projects by status"
+              >
+                <option value="all">All statuses</option>
+                <option value="Planning">Planning</option>
+                <option value="Active">Active</option>
+                <option value="On Hold">On Hold</option>
+                <option value="Completed">Completed</option>
+              </select>
+            </div>
+            <div class="projects-grid" id="projects-list"></div>
+          </section>
+
+          <section class="reports-view hidden" id="reports-view">
+            <div class="stats-grid" id="reports-stats"></div>
+            <div class="activity-panel">
+              <div class="section-heading">
+                <h3>Recent Activity</h3>
+                <button id="clear-activity-btn" class="ghost-btn">
+                  <i class="fa-solid fa-broom"></i>
+                  Clear
+                </button>
+              </div>
+              <div id="activity-list" class="activity-list"></div>
+            </div>
+          </section>
+
+          <section class="project-board hidden" id="project-board">
+            <div class="board-header">
+              <button
+                id="back-to-projects"
+                class="ghost-btn icon-btn"
+                aria-label="Back"
+              >
+                <i class="fa-solid fa-arrow-left"></i>
+              </button>
+              <div class="project-heading">
+                <p class="eyebrow" id="project-meta"></p>
+                <h2 id="project-title"></h2>
+                <p id="project-description"></p>
+              </div>
+              <div class="board-actions">
+                <button id="edit-project-btn" class="secondary-btn">
+                  <i class="fa-solid fa-pen"></i>
+                  Edit
+                </button>
+                <button id="delete-project-btn" class="danger-btn">
+                  <i class="fa-solid fa-trash"></i>
+                  Delete
+                </button>
+              </div>
+            </div>
+
+            <div class="board-summary" id="board-summary"></div>
+
+            <div class="toolbar board-toolbar">
+              <label class="search-field">
+                <i class="fa-solid fa-magnifying-glass"></i>
+                <input
+                  type="search"
+                  id="task-search"
+                  placeholder="Search tasks"
+                />
+              </label>
+              <select id="priority-filter" aria-label="Filter by priority">
+                <option value="all">All priorities</option>
+                <option value="High">High</option>
+                <option value="Medium">Medium</option>
+                <option value="Low">Low</option>
+              </select>
+              <select id="assignee-filter" aria-label="Filter by assignee">
+                <option value="all">All assignees</option>
+              </select>
+              <button id="add-column-btn" class="secondary-btn">
+                <i class="fa-solid fa-layer-group"></i>
+                Column
+              </button>
+            </div>
+
+            <div class="board-columns" id="board-columns"></div>
+          </section>
+        </section>
+      </main>
+
+      <div
+        class="modal hidden"
+        id="project-modal"
+        role="dialog"
+        aria-modal="true"
+      >
+        <form class="modal-content" id="project-form">
+          <div class="modal-heading">
+            <h3 id="project-modal-title">Create Project</h3>
+            <button
+              type="button"
+              class="icon-btn ghost-btn close-modal"
+              data-close="project-modal"
+            >
+              <i class="fa-solid fa-xmark"></i>
+            </button>
           </div>
-
-          <div class="board-columns" id="board-columns">
-            <!-- Columns will be added here -->
+          <label>
+            Project name
+            <input type="text" id="project-name" required />
+          </label>
+          <label>
+            Description
+            <textarea id="project-description-input" rows="3"></textarea>
+          </label>
+          <div class="form-grid">
+            <label>
+              Status
+              <select id="project-status">
+                <option>Planning</option>
+                <option>Active</option>
+                <option>On Hold</option>
+                <option>Completed</option>
+              </select>
+            </label>
+            <label>
+              Due date
+              <input type="date" id="project-due-date" />
+            </label>
           </div>
-        </div>
+          <label>
+            Team members
+            <input
+              type="text"
+              id="project-members"
+              placeholder="Comma-separated names"
+            />
+          </label>
+          <div class="modal-actions">
+            <button
+              type="button"
+              class="ghost-btn close-modal"
+              data-close="project-modal"
+            >
+              Cancel
+            </button>
+            <button type="submit" class="primary-btn">Save Project</button>
+          </div>
+        </form>
       </div>
 
-      <!-- Modals -->
-      <div class="modal hidden" id="task-modal">
-        <div class="modal-content">
-          <h3 id="task-modal-title">Task Title</h3>
-          <textarea
-            id="task-description"
-            placeholder="Task description"
-          ></textarea>
-          <div class="modal-actions">
-            <button id="save-task-btn">Save</button>
-            <button id="close-task-modal">Close</button>
+      <div class="modal hidden" id="task-modal" role="dialog" aria-modal="true">
+        <form class="modal-content wide" id="task-form">
+          <div class="modal-heading">
+            <h3 id="task-modal-title">Task</h3>
+            <button
+              type="button"
+              class="icon-btn ghost-btn close-modal"
+              data-close="task-modal"
+            >
+              <i class="fa-solid fa-xmark"></i>
+            </button>
           </div>
-        </div>
+          <label>
+            Task title
+            <input type="text" id="task-title" required />
+          </label>
+          <label>
+            Description
+            <textarea id="task-description" rows="4"></textarea>
+          </label>
+          <div class="form-grid three">
+            <label>
+              Assignee
+              <select id="task-assignee"></select>
+            </label>
+            <label>
+              Priority
+              <select id="task-priority">
+                <option>High</option>
+                <option>Medium</option>
+                <option>Low</option>
+              </select>
+            </label>
+            <label>
+              Due date
+              <input type="date" id="task-due-date" />
+            </label>
+          </div>
+          <div class="form-grid">
+            <label>
+              Estimate (hours)
+              <input type="number" id="task-estimate" min="0" step="0.5" />
+            </label>
+            <label>
+              Labels
+              <input
+                type="text"
+                id="task-labels"
+                placeholder="Design, API, QA"
+              />
+            </label>
+          </div>
+          <label>
+            Checklist
+            <textarea
+              id="task-checklist"
+              rows="3"
+              placeholder="One checklist item per line"
+            ></textarea>
+          </label>
+          <label>
+            Latest comment
+            <textarea
+              id="task-comment"
+              rows="2"
+              placeholder="Add a note"
+            ></textarea>
+          </label>
+          <div class="modal-actions split">
+            <button
+              type="button"
+              class="danger-btn hidden"
+              id="delete-task-btn"
+            >
+              <i class="fa-solid fa-trash"></i>
+              Delete
+            </button>
+            <span></span>
+            <button
+              type="button"
+              class="ghost-btn close-modal"
+              data-close="task-modal"
+            >
+              Cancel
+            </button>
+            <button type="submit" class="primary-btn">Save Task</button>
+          </div>
+        </form>
       </div>
 
-      <div class="modal hidden" id="project-modal">
-        <div class="modal-content">
-          <h3>Create New Project</h3>
-          <input type="text" id="project-name" placeholder="Project name" />
-          <div class="modal-actions">
-            <button id="save-project-btn">Create</button>
-            <button id="close-project-modal">Cancel</button>
+      <div
+        class="modal hidden"
+        id="column-modal"
+        role="dialog"
+        aria-modal="true"
+      >
+        <form class="modal-content" id="column-form">
+          <div class="modal-heading">
+            <h3>Add Column</h3>
+            <button
+              type="button"
+              class="icon-btn ghost-btn close-modal"
+              data-close="column-modal"
+            >
+              <i class="fa-solid fa-xmark"></i>
+            </button>
           </div>
-        </div>
+          <label>
+            Column name
+            <input type="text" id="column-name" required />
+          </label>
+          <div class="modal-actions">
+            <button
+              type="button"
+              class="ghost-btn close-modal"
+              data-close="column-modal"
+            >
+              Cancel
+            </button>
+            <button type="submit" class="primary-btn">Add Column</button>
+          </div>
+        </form>
       </div>
     </div>
 
