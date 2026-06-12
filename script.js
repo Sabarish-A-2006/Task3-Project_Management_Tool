@@ -1,52 +1,63 @@
 const STORAGE_KEY = "projectflow-data-v1";
+const THEME_KEY = "projectflow-theme";
 const DEFAULT_COLUMNS = ["Backlog", "To Do", "In Progress", "Review", "Done"];
 const FEATURE_MODULES = [
   {
+    id: "planning",
     title: "Project Planning",
     icon: "fa-bullseye",
     text: "Scope, goals, milestones, timelines",
   },
   {
+    id: "tasks",
     title: "Task Management",
     icon: "fa-list-check",
     text: "Create, assign, prioritize, track",
   },
   {
+    id: "scheduling",
     title: "Scheduling",
     icon: "fa-calendar-days",
     text: "Deadlines, calendars, Gantt views",
   },
   {
+    id: "resources",
     title: "Resource Management",
     icon: "fa-users-gear",
     text: "People, budgets, materials",
   },
   {
+    id: "collaboration",
     title: "Collaboration",
     icon: "fa-comments",
     text: "Comments, updates, file sharing",
   },
   {
+    id: "progress",
     title: "Progress Tracking",
     icon: "fa-chart-simple",
     text: "Dashboards, Kanban, reports",
   },
   {
+    id: "risks",
     title: "Risk Management",
     icon: "fa-shield-halved",
     text: "Identify, assess, mitigate",
   },
   {
+    id: "documents",
     title: "Documents",
     icon: "fa-folder-tree",
     text: "Store and organize project files",
   },
   {
+    id: "reports",
     title: "Analytics",
     icon: "fa-chart-line",
     text: "Performance reports and insights",
   },
   {
+    id: "time",
     title: "Time Tracking",
     icon: "fa-stopwatch",
     text: "Record task and project effort",
@@ -62,6 +73,189 @@ const FEATURE_MODULES = [
     text: "Deadline and change reminders",
   },
 ];
+
+const FEATURE_PAGES = {
+  planning: {
+    eyebrow: "Project Planning",
+    title: "Define scope, goals, timelines, and milestones.",
+    intro:
+      "Turn an idea into an executable delivery plan with clear boundaries, measurable outcomes, owners, assumptions, and checkpoint dates.",
+    icon: "fa-bullseye",
+    cards: [
+      ["Scope baseline", "Document inclusions, exclusions, dependencies, and approval criteria before work starts.", "fa-compass-drafting"],
+      ["Goal hierarchy", "Connect business goals to measurable project objectives, deliverables, and acceptance signals.", "fa-bullseye"],
+      ["Milestone governance", "Use phase gates for discovery, build, QA, launch, and post-launch review.", "fa-flag-checkered"],
+    ],
+    matrix: [
+      ["Charter", "Project summary, sponsors, success measures, constraints, budget baseline, and risk appetite."],
+      ["Work breakdown", "Split large outcomes into epics, deliverables, tasks, and checklist-ready actions."],
+      ["Change control", "Capture scope changes with impact on timeline, cost, risk, and resource allocation."],
+      ["Approvals", "Keep sign-offs visible so project decisions do not disappear into private messages."],
+    ],
+  },
+  tasks: {
+    eyebrow: "Task Management",
+    title: "Create, assign, prioritize, and track delivery work.",
+    intro:
+      "Give every task an owner, priority, due date, estimate, checklist, labels, and latest context so the board shows real execution health.",
+    icon: "fa-list-check",
+    cards: [
+      ["Assignment clarity", "Every task should have exactly one accountable assignee and visible collaborators.", "fa-user-check"],
+      ["Priority lanes", "High, medium, and low priority labels help teams sequence the work that protects outcomes.", "fa-arrow-up-wide-short"],
+      ["Execution detail", "Descriptions, checklists, comments, and labels keep handoffs clean.", "fa-clipboard-list"],
+    ],
+    matrix: [
+      ["Backlog hygiene", "Review stale tasks weekly and remove duplicates before sprint or milestone planning."],
+      ["Definition of done", "Attach test, review, documentation, and release criteria to important tasks."],
+      ["Dependency tracking", "Flag blocked tasks early and connect them to decisions or external owners."],
+      ["Flow metrics", "Watch aging work, review queues, completion rate, and overdue counts."],
+    ],
+  },
+  scheduling: {
+    eyebrow: "Scheduling",
+    title: "Manage deadlines, calendars, Gantt charts, and timelines.",
+    intro:
+      "Coordinate project dates with task due dates, milestone checkpoints, review windows, release freezes, and dependency buffers.",
+    icon: "fa-chart-gantt",
+    cards: [
+      ["Deadline control", "Track project due dates and task-level due dates in one calendar-aware workspace.", "fa-calendar-check"],
+      ["Timeline planning", "Use milestones as lightweight Gantt anchors for phases and dependencies.", "fa-timeline"],
+      ["Critical path", "Spot overdue work and compressed schedules before they become launch surprises.", "fa-route"],
+    ],
+    matrix: [
+      ["Calendar view", "Display task deadlines, milestone dates, ceremonies, holidays, and release windows."],
+      ["Gantt view", "Map phases, dependencies, duration, and ownership across the project lifecycle."],
+      ["Buffers", "Reserve time for QA, stakeholder review, procurement, and production rollback plans."],
+      ["Rescheduling", "When dates move, record why and update risks, resources, and stakeholder alerts."],
+    ],
+  },
+  resources: {
+    eyebrow: "Resource Management",
+    title: "Allocate and monitor people, budgets, and materials.",
+    intro:
+      "Balance workload, availability, budget burn, equipment, environments, vendors, and materials across the project portfolio.",
+    icon: "fa-users-gear",
+    cards: [
+      ["Team capacity", "Compare estimates and tracked hours against the people assigned to active work.", "fa-people-group"],
+      ["Budget health", "Monitor planned budget, spent amount, burn percentage, and warning thresholds.", "fa-wallet"],
+      ["Materials", "List tools, environments, documents, devices, suppliers, and assets required for delivery.", "fa-boxes-stacked"],
+    ],
+    matrix: [
+      ["Allocation", "Keep owners, backup owners, and availability visible for each major deliverable."],
+      ["Cost control", "Review committed, spent, and forecast cost before approving scope changes."],
+      ["Utilization", "Watch overloaded contributors and redistribute work before deadlines slip."],
+      ["Procurement", "Track lead times for software, hardware, vendor access, and compliance evidence."],
+    ],
+  },
+  collaboration: {
+    eyebrow: "Collaboration Tools",
+    title: "Support communication, sharing, comments, and discussions.",
+    intro:
+      "Keep project conversations close to the work: decisions, files, task notes, stakeholder updates, and team discussions should be searchable.",
+    icon: "fa-comments",
+    cards: [
+      ["Task comments", "Capture status updates, decisions, blockers, and handoff notes inside each task.", "fa-comment-dots"],
+      ["File sharing", "Attach briefs, checklists, assets, contracts, specs, and meeting notes to the project.", "fa-share-nodes"],
+      ["Team alignment", "Use activity logs and alerts to keep contributors aware of important changes.", "fa-bell"],
+    ],
+    matrix: [
+      ["Discussion threads", "Separate decision threads from casual updates so teams can find final answers."],
+      ["Mentions", "Notify the right owner when a task, risk, file, or milestone needs action."],
+      ["Version awareness", "Record which document version supported a decision or delivery sign-off."],
+      ["Stakeholder updates", "Summarize progress, risk, timeline, and decisions for non-delivery audiences."],
+    ],
+  },
+  progress: {
+    eyebrow: "Progress Tracking",
+    title: "Monitor status through dashboards, Kanban, and reports.",
+    intro:
+      "See what is planned, active, blocked, in review, done, overdue, and at risk with visual summaries that move as the project moves.",
+    icon: "fa-chart-simple",
+    cards: [
+      ["Kanban flow", "Drag tasks across Backlog, To Do, In Progress, Review, and Done.", "fa-table-columns"],
+      ["Dashboard KPIs", "Track project count, active projects, task totals, overdue work, and completion rate.", "fa-gauge-high"],
+      ["Status signals", "Use progress, due dates, risk level, budget burn, and activity to guide standups.", "fa-signal"],
+    ],
+    matrix: [
+      ["Health status", "Combine schedule, scope, budget, quality, and risk into a simple project health view."],
+      ["Work in progress", "Limit too much active work so review queues and blockers do not hide."],
+      ["Burndown", "Compare remaining task effort against time left in the milestone."],
+      ["Portfolio view", "Review project progress across teams, owners, deadlines, and risk exposure."],
+    ],
+  },
+  risks: {
+    eyebrow: "Risk Management",
+    title: "Identify, assess, mitigate, and monitor project risks.",
+    intro:
+      "Run a living risk register with probability, impact, severity, mitigation, owner, trigger, response plan, and review cadence.",
+    icon: "fa-shield-halved",
+    cards: [
+      ["Risk register", "Track high and medium risks with mitigation notes attached to each project.", "fa-triangle-exclamation"],
+      ["Mitigation plans", "Convert risk responses into owned tasks, milestones, or stakeholder decisions.", "fa-shield"],
+      ["Alerts", "Surface urgent risk warnings alongside project activity and budget signals.", "fa-bell"],
+    ],
+    matrix: [
+      ["Probability", "Estimate how likely the risk is and revisit the score during planning reviews."],
+      ["Impact", "Assess schedule, budget, scope, quality, compliance, and reputation effects."],
+      ["Response", "Avoid, reduce, transfer, accept, or escalate each meaningful risk."],
+      ["Contingency", "Define fallback owners, rollback options, reserves, and communication plans."],
+    ],
+  },
+  documents: {
+    eyebrow: "Document Management",
+    title: "Store and organize project-related files and records.",
+    intro:
+      "Centralize charters, requirements, contracts, assets, test plans, decisions, status reports, and launch checklists.",
+    icon: "fa-folder-tree",
+    cards: [
+      ["Project library", "Keep project charters, briefs, checklists, and shared assets grouped by project.", "fa-folder-open"],
+      ["Decision history", "Preserve approvals, assumptions, and change records for later review.", "fa-file-signature"],
+      ["Operational files", "Organize QA evidence, release notes, runbooks, and vendor documents.", "fa-file-lines"],
+    ],
+    matrix: [
+      ["Folders", "Group files by phase, deliverable, function, or approval flow."],
+      ["Metadata", "Record owner, date, version, status, and related task or milestone."],
+      ["Access", "Separate internal working files from stakeholder-ready documents."],
+      ["Retention", "Archive completed project documents with final status and lessons learned."],
+    ],
+  },
+  reports: {
+    eyebrow: "Reporting & Analytics",
+    title: "Generate performance reports and actionable insights.",
+    intro:
+      "Convert project data into summaries for executives, project managers, delivery teams, finance, and stakeholders.",
+    icon: "fa-chart-line",
+    cards: [
+      ["Performance", "Report average completion, completed work, overdue items, and active workload.", "fa-chart-column"],
+      ["Financials", "Compare budget used, budget remaining, and spend pressure by project.", "fa-money-bill-trend-up"],
+      ["Forecasting", "Use current velocity, risks, and remaining effort to anticipate delivery outcomes.", "fa-magnifying-glass-chart"],
+    ],
+    matrix: [
+      ["Status report", "Summarize achievements, blockers, decisions, risks, next steps, budget, and schedule."],
+      ["Portfolio report", "Compare projects by health, owner, due date, risk level, and completion rate."],
+      ["Resource report", "Show time estimates, logged hours, allocation pressure, and utilization."],
+      ["Lessons learned", "Capture what worked, what slipped, and what to improve after completion."],
+    ],
+  },
+  time: {
+    eyebrow: "Time Tracking",
+    title: "Record effort spent on tasks and projects.",
+    intro:
+      "Use estimates and tracked hours to understand burn, billing, utilization, forecasting, and whether scope matches available capacity.",
+    icon: "fa-stopwatch",
+    cards: [
+      ["Task timers", "Record time against individual tasks for accurate delivery and billing history.", "fa-clock"],
+      ["Estimate variance", "Compare tracked hours to planned estimates before deadlines are missed.", "fa-scale-balanced"],
+      ["Timesheets", "Roll task effort into project-level and user-level reporting.", "fa-table-list"],
+    ],
+    matrix: [
+      ["Manual entries", "Allow contributors to add notes, dates, and categories for logged work."],
+      ["Approval", "Review submitted hours for billable work, payroll, or compliance needs."],
+      ["Forecasting", "Use effort trends to refine future estimates and capacity planning."],
+      ["Utilization", "Monitor focus time, meeting load, project allocation, and unplanned work."],
+    ],
+  },
+};
 
 const state = {
   data: loadData(),
@@ -96,6 +290,7 @@ const els = {
   viewEyebrow: $("#view-eyebrow"),
   projectsView: $("#projects-view"),
   reportsView: $("#reports-view"),
+  featureView: $("#feature-view"),
   projectBoard: $("#project-board"),
   workspaceStats: $("#workspace-stats"),
   featureModules: $("#feature-modules"),
@@ -105,6 +300,7 @@ const els = {
   projectSearch: $("#project-search"),
   projectStatusFilter: $("#project-status-filter"),
   createProjectBtn: $("#create-project-btn"),
+  themeToggleBtn: $("#theme-toggle-btn"),
   exportDataBtn: $("#export-data-btn"),
   clearActivityBtn: $("#clear-activity-btn"),
   activityList: $("#activity-list"),
@@ -150,6 +346,7 @@ const els = {
   columnName: $("#column-name"),
 };
 
+applyTheme(localStorage.getItem(THEME_KEY) || "light");
 bindEvents();
 restoreSession();
 
@@ -170,6 +367,7 @@ function bindEvents() {
   els.registerBtn.addEventListener("click", handleRegister);
   els.logoutBtn.addEventListener("click", handleLogout);
   els.createProjectBtn.addEventListener("click", () => openProjectModal());
+  els.themeToggleBtn.addEventListener("click", toggleTheme);
   els.exportDataBtn.addEventListener("click", exportData);
   els.clearActivityBtn.addEventListener("click", clearActivity);
   els.backToProjects.addEventListener("click", () => showView("projects"));
@@ -221,6 +419,26 @@ function bindEvents() {
       ["project-modal", "task-modal", "column-modal"].forEach(closeModal);
     }
   });
+}
+
+function toggleTheme() {
+  const nextTheme = document.body.classList.contains("dark-mode")
+    ? "light"
+    : "dark";
+  applyTheme(nextTheme);
+  localStorage.setItem(THEME_KEY, nextTheme);
+  document.body.classList.remove("theme-flash");
+  requestAnimationFrame(() => document.body.classList.add("theme-flash"));
+}
+
+function applyTheme(theme) {
+  const isDark = theme === "dark";
+  document.body.classList.toggle("dark-mode", isDark);
+  if (!els.themeToggleBtn) return;
+  els.themeToggleBtn.innerHTML = `
+    <i class="fa-solid ${isDark ? "fa-sun" : "fa-moon"}"></i>
+    ${isDark ? "Light" : "Dark"}
+  `;
 }
 
 function handleLogin() {
@@ -293,10 +511,12 @@ function restoreSession() {
 function showView(view) {
   state.view = view;
   state.currentProjectId = view === "project" ? state.currentProjectId : null;
+  const isFeatureView = Boolean(FEATURE_PAGES[view]) && view !== "reports";
 
   els.projectsView.classList.toggle("hidden", view !== "projects");
   els.reportsView.classList.toggle("hidden", view !== "reports");
   els.projectBoard.classList.toggle("hidden", view !== "project");
+  els.featureView.classList.toggle("hidden", !isFeatureView);
 
   $$(".nav-link").forEach((button) => {
     button.classList.toggle("active", button.dataset.view === view);
@@ -310,8 +530,12 @@ function showView(view) {
 
   if (view === "reports") {
     els.viewEyebrow.textContent = "Insights";
-    els.viewTitle.textContent = "Reports";
+    els.viewTitle.textContent = "Reporting & Analytics";
     renderReports();
+  }
+
+  if (isFeatureView) {
+    renderFeaturePage(view);
   }
 
   if (view === "project") {
@@ -355,6 +579,12 @@ function renderProjects() {
   els.projectsList.innerHTML = filtered.map(renderProjectCard).join("");
   $$(".project-card").forEach((card) => {
     card.addEventListener("click", () => openProject(card.dataset.id));
+  });
+  $$(".module-open-btn").forEach((button) => {
+    button.addEventListener("click", (event) => {
+      event.stopPropagation();
+      showView(button.dataset.view);
+    });
   });
 }
 
@@ -446,6 +676,9 @@ function renderFeatureModules(projects) {
           <h3>${module.title}</h3>
           <p>${module.text}</p>
         </div>
+        <button class="ghost-btn icon-btn module-open-btn" data-view="${module.id}" aria-label="Open ${module.title}">
+          <i class="fa-solid fa-arrow-right"></i>
+        </button>
         <strong>${signal}</strong>
       </article>
     `;
@@ -984,6 +1217,180 @@ function renderReports() {
     : '<div class="empty-state">No activity recorded yet.</div>';
 }
 
+function renderFeaturePage(view) {
+  const config = FEATURE_PAGES[view];
+  const projects = userProjects();
+  const stats = getWorkspaceStats(projects);
+  if (!config) return;
+
+  els.viewEyebrow.textContent = config.eyebrow;
+  els.viewTitle.textContent = config.eyebrow;
+  els.featureView.innerHTML = `
+    <section class="feature-hero">
+      <div>
+        <p class="eyebrow">${config.eyebrow}</p>
+        <h3>${config.title}</h3>
+        <p>${config.intro}</p>
+      </div>
+      <div class="feature-graphic" aria-hidden="true">
+        ${renderFeatureGraphic(view, stats)}
+      </div>
+    </section>
+
+    <div class="stats-grid">
+      ${renderStats(stats)}
+    </div>
+
+    <section class="feature-grid">
+      ${config.cards.map(renderFeatureCard).join("")}
+    </section>
+
+    <section class="matrix-grid">
+      ${config.matrix.map(renderMatrixCard).join("")}
+    </section>
+
+    <section class="timeline-roadmap">
+      <div class="section-heading">
+        <div>
+          <p class="eyebrow">Recommended workflow</p>
+          <h3>${workflowTitle(view)}</h3>
+        </div>
+      </div>
+      <div class="roadmap-track">
+        ${workflowSteps(view).map(renderRoadmapStep).join("")}
+      </div>
+    </section>
+
+    <section class="feature-grid">
+      ${renderLiveInsights(view, projects, stats)}
+    </section>
+  `;
+}
+
+function renderFeatureCard([title, text, icon]) {
+  return `
+    <article class="feature-card">
+      <span><i class="fa-solid ${icon}"></i></span>
+      <h4>${escapeHtml(title)}</h4>
+      <p>${escapeHtml(text)}</p>
+    </article>
+  `;
+}
+
+function renderMatrixCard([title, text]) {
+  return `
+    <article class="matrix-card">
+      <span><i class="fa-solid fa-layer-group"></i></span>
+      <h4>${escapeHtml(title)}</h4>
+      <p>${escapeHtml(text)}</p>
+    </article>
+  `;
+}
+
+function renderRoadmapStep([phase, title, text]) {
+  return `
+    <article class="roadmap-step">
+      <span>${escapeHtml(phase)}</span>
+      <h4>${escapeHtml(title)}</h4>
+      <p>${escapeHtml(text)}</p>
+    </article>
+  `;
+}
+
+function renderFeatureGraphic(view, stats) {
+  const values = {
+    planning: [stats.milestones, stats.projects, stats.tasks],
+    tasks: [stats.tasks, stats.doneTasks, stats.overdue],
+    scheduling: [stats.overdue, stats.milestones, stats.alerts],
+    resources: [stats.members, stats.budgetUsed, stats.estimate],
+    collaboration: [stats.comments, stats.documents, stats.alerts],
+    progress: [stats.averageProgress, stats.doneTasks, stats.tasks],
+    risks: [stats.highRisks, stats.alerts, stats.projects],
+    documents: [stats.documents, stats.projects, stats.comments],
+    time: [stats.tracked, stats.estimate, stats.averageProgress],
+  }[view] || [stats.projects, stats.tasks, stats.averageProgress];
+  const icons = ["fa-gauge-high", "fa-diagram-project", "fa-chart-line"];
+
+  return values
+    .map((value, index) => {
+      const width = Math.max(22, Math.min(100, Number(value) * 8 || 46));
+      return `
+        <div class="graphic-row">
+          <i class="fa-solid ${icons[index]}"></i>
+          <div class="graphic-bar"><span style="--value: ${width}%"></span></div>
+          <strong>${value}</strong>
+        </div>
+      `;
+    })
+    .join("");
+}
+
+function renderLiveInsights(view, projects, stats) {
+  const newest = projects[0];
+  const allTasks = allWorkspaceTasks(projects);
+  const overdueTasks = allTasks.filter((task) => isOverdue(task.dueDate));
+  const insightMap = {
+    planning: [
+      ["Milestones planned", stats.milestones, "Keep milestone ownership visible and review phase gates weekly."],
+      ["Active projects", stats.active, "Active scope should have current goals, assumptions, and success measures."],
+      ["Next due project", newest?.name || "No project yet", newest?.dueDate ? `Due ${formatDate(newest.dueDate)}.` : "Create a project to begin planning."],
+    ],
+    tasks: [
+      ["Total tasks", stats.tasks, "Use the Kanban board to move work from backlog to done."],
+      ["Completed tasks", stats.doneTasks, "Completion is counted from tasks in the Done column."],
+      ["Overdue tasks", stats.overdue, overdueTasks[0]?.title || "No overdue task title available."],
+    ],
+    scheduling: [
+      ["Overdue items", stats.overdue, "Review schedule pressure before committing new work."],
+      ["Milestones", stats.milestones, "Milestones anchor the timeline and release checkpoints."],
+      ["Alerts", stats.alerts, "Alerts flag schedule, risk, and budget events that need attention."],
+    ],
+    resources: [
+      ["Team members", stats.members, "Monitor allocation across project members before assigning more work."],
+      ["Budget used", `${stats.budgetUsed}%`, `${currency(stats.budgetSpent)} spent from ${currency(stats.budgetTotal)} planned.`],
+      ["Estimated hours", stats.estimate, "Estimates help compare effort demand against capacity."],
+    ],
+    collaboration: [
+      ["Comments", stats.comments, "Task comments preserve decisions and updates close to execution."],
+      ["Documents", stats.documents, "Use project files as the source of truth for briefs and checklists."],
+      ["Recent activity", state.data.activity[0]?.message || "No activity yet", "Workspace activity records important changes."],
+    ],
+    progress: [
+      ["Average progress", `${stats.averageProgress}%`, "Progress is derived from task movement into Done."],
+      ["Done tasks", stats.doneTasks, "Completed work is the strongest progress signal."],
+      ["Active projects", stats.active, "Use active status for projects currently consuming team capacity."],
+    ],
+    risks: [
+      ["High risks", stats.highRisks, "High risks need mitigation owners and review cadence."],
+      ["Alerts", stats.alerts, "Alerts should trigger action, not just awareness."],
+      ["Overdue work", stats.overdue, "Overdue tasks often become schedule and stakeholder risks."],
+    ],
+    documents: [
+      ["Stored files", stats.documents, "Attach charters, checklists, assets, and reports to each project."],
+      ["Projects", stats.projects, "Each project can maintain its own document library."],
+      ["Comments", stats.comments, "Comments add context around document-driven decisions."],
+    ],
+    time: [
+      ["Tracked hours", stats.tracked, "Tracked time supports forecasting and utilization reporting."],
+      ["Estimated hours", stats.estimate, "Estimate variance shows where scope or complexity changed."],
+      ["Budget used", `${stats.budgetUsed}%`, "Time and budget should be reviewed together."],
+    ],
+  };
+
+  return (insightMap[view] || [])
+    .map(
+      ([title, value, text]) => `
+        <article class="insight-card">
+          <span><i class="fa-solid fa-lightbulb"></i></span>
+          <h4>${escapeHtml(title)}</h4>
+          <strong>${escapeHtml(value)}</strong>
+          <p>${escapeHtml(text)}</p>
+        </article>
+      `,
+    )
+    .join("");
+}
+
 function renderAnalyticsPanels(projects) {
   const stats = getWorkspaceStats(projects);
   return `
@@ -1023,6 +1430,80 @@ function renderAnalyticsPanels(projects) {
   `;
 }
 
+function workflowTitle(view) {
+  return {
+    planning: "From concept to approved baseline",
+    tasks: "From request to completed work",
+    scheduling: "From dates to delivery confidence",
+    resources: "From demand to balanced capacity",
+    collaboration: "From discussion to shared decision",
+    progress: "From board movement to status clarity",
+    risks: "From uncertainty to controlled response",
+    documents: "From working files to governed records",
+    time: "From effort log to forecast accuracy",
+  }[view];
+}
+
+function workflowSteps(view) {
+  const common = {
+    planning: [
+      ["01", "Frame", "Capture scope, goals, constraints, and assumptions."],
+      ["02", "Break down", "Convert deliverables into milestones and manageable tasks."],
+      ["03", "Baseline", "Confirm owners, due dates, budget, and acceptance criteria."],
+      ["04", "Review", "Revisit scope, risks, and timeline as the project changes."],
+    ],
+    tasks: [
+      ["01", "Capture", "Create tasks with context, labels, due dates, and estimates."],
+      ["02", "Assign", "Choose owners and priority based on impact and dependencies."],
+      ["03", "Execute", "Move cards across the Kanban board as work advances."],
+      ["04", "Close", "Finish checklists, comments, review, and done criteria."],
+    ],
+    scheduling: [
+      ["01", "Map", "Lay out project phases, milestones, and fixed deadlines."],
+      ["02", "Sequence", "Order dependent work and add review buffers."],
+      ["03", "Monitor", "Watch overdue tasks, alerts, and milestone drift."],
+      ["04", "Adjust", "Update dates and communicate schedule changes early."],
+    ],
+    resources: [
+      ["01", "Plan", "Estimate people, budget, materials, and tools needed."],
+      ["02", "Allocate", "Assign owners and confirm resource availability."],
+      ["03", "Track", "Compare actual hours and spend against the baseline."],
+      ["04", "Rebalance", "Move work or funding when demand exceeds capacity."],
+    ],
+    collaboration: [
+      ["01", "Discuss", "Keep project conversations tied to tasks and files."],
+      ["02", "Decide", "Record decisions, owners, due dates, and rationale."],
+      ["03", "Share", "Make documents and status visible to the right people."],
+      ["04", "Notify", "Use activity and alerts to surface important changes."],
+    ],
+    progress: [
+      ["01", "Measure", "Track tasks, completion, overdue items, and project status."],
+      ["02", "Visualize", "Use boards, dashboards, and reports for fast scanning."],
+      ["03", "Diagnose", "Find blockers, review queues, and risk signals."],
+      ["04", "Report", "Share concise updates with next actions and owners."],
+    ],
+    risks: [
+      ["01", "Identify", "List threats, assumptions, blockers, and dependencies."],
+      ["02", "Assess", "Score probability, impact, urgency, and exposure."],
+      ["03", "Mitigate", "Create response tasks, owners, and contingency plans."],
+      ["04", "Review", "Track triggers and update the register regularly."],
+    ],
+    documents: [
+      ["01", "Collect", "Attach briefs, charters, assets, and checklists."],
+      ["02", "Organize", "Group files by phase, deliverable, or team."],
+      ["03", "Govern", "Track owner, status, version, and access needs."],
+      ["04", "Archive", "Store final records and lessons learned after closeout."],
+    ],
+    time: [
+      ["01", "Estimate", "Plan task effort before work begins."],
+      ["02", "Log", "Record time against tasks and project activity."],
+      ["03", "Compare", "Review planned versus actual effort and budget pressure."],
+      ["04", "Forecast", "Use variance to improve future schedules and staffing."],
+    ],
+  };
+  return common[view] || [];
+}
+
 function renderStats(stats) {
   return [
     ["Projects", stats.projects],
@@ -1041,10 +1522,14 @@ function renderStats(stats) {
     .join("");
 }
 
-function getWorkspaceStats(projects) {
-  const allTasks = projects.flatMap((project) =>
+function allWorkspaceTasks(projects) {
+  return projects.flatMap((project) =>
     project.columns.flatMap((column) => column.tasks),
   );
+}
+
+function getWorkspaceStats(projects) {
+  const allTasks = allWorkspaceTasks(projects);
   const progressValues = projects.map(
     (project) => getProjectStats(project).progress,
   );

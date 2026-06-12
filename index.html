@@ -147,9 +147,45 @@
               <i class="fa-solid fa-table-columns"></i>
               Projects
             </button>
+            <button class="nav-link" data-view="planning">
+              <i class="fa-solid fa-bullseye"></i>
+              Planning
+            </button>
+            <button class="nav-link" data-view="tasks">
+              <i class="fa-solid fa-list-check"></i>
+              Tasks
+            </button>
+            <button class="nav-link" data-view="scheduling">
+              <i class="fa-solid fa-chart-gantt"></i>
+              Scheduling
+            </button>
+            <button class="nav-link" data-view="resources">
+              <i class="fa-solid fa-users-gear"></i>
+              Resources
+            </button>
+            <button class="nav-link" data-view="collaboration">
+              <i class="fa-solid fa-comments"></i>
+              Collaboration
+            </button>
+            <button class="nav-link" data-view="progress">
+              <i class="fa-solid fa-chart-simple"></i>
+              Progress
+            </button>
+            <button class="nav-link" data-view="risks">
+              <i class="fa-solid fa-shield-halved"></i>
+              Risks
+            </button>
+            <button class="nav-link" data-view="documents">
+              <i class="fa-solid fa-folder-tree"></i>
+              Documents
+            </button>
             <button class="nav-link" data-view="reports">
               <i class="fa-solid fa-chart-line"></i>
-              Reports
+              Analytics
+            </button>
+            <button class="nav-link" data-view="time">
+              <i class="fa-solid fa-stopwatch"></i>
+              Time
             </button>
           </nav>
           <div class="user-panel">
@@ -168,6 +204,10 @@
               <h2 id="view-title">Project Dashboard</h2>
             </div>
             <div class="topbar-actions">
+              <button id="theme-toggle-btn" class="secondary-btn">
+                <i class="fa-solid fa-moon"></i>
+                Theme
+              </button>
               <button id="export-data-btn" class="secondary-btn">
                 <i class="fa-solid fa-download"></i>
                 Export
@@ -219,6 +259,8 @@
               <div id="activity-list" class="activity-list"></div>
             </div>
           </section>
+
+          <section class="feature-page hidden" id="feature-view"></section>
 
           <section class="project-board hidden" id="project-board">
             <div class="board-header">
