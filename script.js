@@ -1,5 +1,67 @@
 const STORAGE_KEY = "projectflow-data-v1";
 const DEFAULT_COLUMNS = ["Backlog", "To Do", "In Progress", "Review", "Done"];
+const FEATURE_MODULES = [
+  {
+    title: "Project Planning",
+    icon: "fa-bullseye",
+    text: "Scope, goals, milestones, timelines",
+  },
+  {
+    title: "Task Management",
+    icon: "fa-list-check",
+    text: "Create, assign, prioritize, track",
+  },
+  {
+    title: "Scheduling",
+    icon: "fa-calendar-days",
+    text: "Deadlines, calendars, Gantt views",
+  },
+  {
+    title: "Resource Management",
+    icon: "fa-users-gear",
+    text: "People, budgets, materials",
+  },
+  {
+    title: "Collaboration",
+    icon: "fa-comments",
+    text: "Comments, updates, file sharing",
+  },
+  {
+    title: "Progress Tracking",
+    icon: "fa-chart-simple",
+    text: "Dashboards, Kanban, reports",
+  },
+  {
+    title: "Risk Management",
+    icon: "fa-shield-halved",
+    text: "Identify, assess, mitigate",
+  },
+  {
+    title: "Documents",
+    icon: "fa-folder-tree",
+    text: "Store and organize project files",
+  },
+  {
+    title: "Analytics",
+    icon: "fa-chart-line",
+    text: "Performance reports and insights",
+  },
+  {
+    title: "Time Tracking",
+    icon: "fa-stopwatch",
+    text: "Record task and project effort",
+  },
+  {
+    title: "Budget",
+    icon: "fa-wallet",
+    text: "Costs, expenses, financial health",
+  },
+  {
+    title: "Alerts",
+    icon: "fa-bell",
+    text: "Deadline and change reminders",
+  },
+];
 
 const state = {
   data: loadData(),
@@ -36,7 +98,9 @@ const els = {
   reportsView: $("#reports-view"),
   projectBoard: $("#project-board"),
   workspaceStats: $("#workspace-stats"),
+  featureModules: $("#feature-modules"),
   reportsStats: $("#reports-stats"),
+  analyticsPanels: $("#analytics-panels"),
   projectsList: $("#projects-list"),
   projectSearch: $("#project-search"),
   projectStatusFilter: $("#project-status-filter"),
@@ -51,6 +115,10 @@ const els = {
   editProjectBtn: $("#edit-project-btn"),
   deleteProjectBtn: $("#delete-project-btn"),
   boardSummary: $("#board-summary"),
+  planningPanel: $("#planning-panel"),
+  resourcePanel: $("#resource-panel"),
+  riskPanel: $("#risk-panel"),
+  documentPanel: $("#document-panel"),
   boardColumns: $("#board-columns"),
   taskSearch: $("#task-search"),
   priorityFilter: $("#priority-filter"),
@@ -276,6 +344,7 @@ function renderProjects() {
   });
 
   els.workspaceStats.innerHTML = renderStats(getWorkspaceStats(projects));
+  els.featureModules.innerHTML = renderFeatureModules(projects);
 
   if (!filtered.length) {
     els.projectsList.innerHTML =
@@ -339,6 +408,7 @@ function renderBoard() {
   els.projectDescription.textContent =
     project.description || "No description added.";
   els.boardSummary.innerHTML = renderBoardSummary(project);
+  renderProjectIntelligence(project);
   renderAssigneeFilter(project);
 
   els.boardColumns.innerHTML = project.columns.map(renderColumn).join("");
@@ -352,7 +422,7 @@ function renderBoardSummary(project) {
     ["Tasks", stats.total],
     ["Completed", stats.done],
     ["Overdue", stats.overdue],
-    ["Estimate", `${stats.estimate}h`],
+    ["Tracked", `${stats.tracked}h / ${stats.estimate}h`],
   ]
     .map(
       ([label, value]) => `
@@ -363,6 +433,148 @@ function renderBoardSummary(project) {
       `,
     )
     .join("");
+}
+
+function renderFeatureModules(projects) {
+  const stats = getWorkspaceStats(projects);
+  return FEATURE_MODULES.map((module, index) => {
+    const signal = moduleSignal(module.title, stats);
+    return `
+      <article class="module-card" style="--delay: ${index * 45}ms">
+        <span class="module-icon"><i class="fa-solid ${module.icon}"></i></span>
+        <div>
+          <h3>${module.title}</h3>
+          <p>${module.text}</p>
+        </div>
+        <strong>${signal}</strong>
+      </article>
+    `;
+  }).join("");
+}
+
+function moduleSignal(title, stats) {
+  const signals = {
+    "Project Planning": `${stats.milestones} milestones`,
+    "Task Management": `${stats.tasks} tasks`,
+    Scheduling: `${stats.overdue} overdue`,
+    "Resource Management": `${stats.members} members`,
+    Collaboration: `${stats.comments} comments`,
+    "Progress Tracking": `${stats.averageProgress}% avg`,
+    "Risk Management": `${stats.highRisks} high risks`,
+    Documents: `${stats.documents} files`,
+    Analytics: `${stats.projects} projects`,
+    "Time Tracking": `${stats.tracked}h logged`,
+    Budget: `${stats.budgetUsed}% used`,
+    Alerts: `${stats.alerts} alerts`,
+  };
+  return signals[title] || "Ready";
+}
+
+function renderProjectIntelligence(project) {
+  const stats = getProjectStats(project);
+  const milestones = safeList(project.milestones);
+  const risks = safeList(project.risks);
+  const documents = safeList(project.documents);
+  const alerts = safeList(project.alerts);
+  const resources = getResourceSummary(project);
+
+  els.planningPanel.innerHTML = `
+    <div class="panel-heading">
+      <span><i class="fa-solid fa-timeline"></i></span>
+      <div>
+        <p class="eyebrow">Scheduling</p>
+        <h3>Planning Timeline</h3>
+      </div>
+    </div>
+    <div class="timeline-strip">
+      ${milestones
+        .map(
+          (milestone) => `
+            <div class="timeline-node ${milestone.done ? "done" : ""}">
+              <span>${formatShortDate(milestone.date)}</span>
+              <strong>${escapeHtml(milestone.name)}</strong>
+            </div>
+          `,
+        )
+        .join("")}
+    </div>
+  `;
+
+  els.resourcePanel.innerHTML = `
+    <div class="panel-heading">
+      <span><i class="fa-solid fa-users-gear"></i></span>
+      <div>
+        <p class="eyebrow">Resources</p>
+        <h3>Team, Time, Budget</h3>
+      </div>
+    </div>
+    <div class="resource-bars">
+      <label>Time <strong>${stats.tracked}h / ${stats.estimate}h</strong></label>
+      ${renderMeter(stats.estimate ? Math.min(100, Math.round((stats.tracked / stats.estimate) * 100)) : 0)}
+      <label>Budget <strong>${currency(project.budget?.spent || 0)} / ${currency(project.budget?.total || 0)}</strong></label>
+      ${renderMeter(project.budget?.total ? Math.min(100, Math.round((project.budget.spent / project.budget.total) * 100)) : 0)}
+      <label>Materials <strong>${resources.materials}</strong></label>
+      ${renderMeter(resources.allocation)}
+    </div>
+  `;
+
+  els.riskPanel.innerHTML = `
+    <div class="panel-heading">
+      <span><i class="fa-solid fa-shield-halved"></i></span>
+      <div>
+        <p class="eyebrow">Risk Management</p>
+        <h3>Risk Register</h3>
+      </div>
+    </div>
+    <div class="risk-list">
+      ${risks
+        .map(
+          (risk) => `
+            <div class="risk-item">
+              <span class="badge ${risk.level === "High" ? "red" : "orange"}">${risk.level}</span>
+              <div>
+                <strong>${escapeHtml(risk.title)}</strong>
+                <p>${escapeHtml(risk.mitigation)}</p>
+              </div>
+            </div>
+          `,
+        )
+        .join("")}
+    </div>
+  `;
+
+  els.documentPanel.innerHTML = `
+    <div class="panel-heading">
+      <span><i class="fa-solid fa-folder-tree"></i></span>
+      <div>
+        <p class="eyebrow">Collaboration</p>
+        <h3>Docs & Alerts</h3>
+      </div>
+    </div>
+    <div class="document-list">
+      ${documents
+        .map(
+          (document) => `
+            <div class="document-item">
+              <i class="fa-solid ${document.icon || "fa-file-lines"}"></i>
+              <span>${escapeHtml(document.name)}</span>
+            </div>
+          `,
+        )
+        .join("")}
+    </div>
+    <div class="alert-strip">
+      ${alerts.map((alert) => `<span><i class="fa-solid fa-bell"></i>${escapeHtml(alert)}</span>`).join("")}
+    </div>
+  `;
+}
+
+function renderMeter(value) {
+  return `
+    <div class="progress-track">
+      <div class="progress-fill" style="width: ${value}%"></div>
+    </div>
+  `;
 }
 
 function renderAssigneeFilter(project) {
@@ -535,6 +747,30 @@ function saveProject(event) {
       createdAt: todayIso(),
       updatedAt: todayIso(),
       ...payload,
+      budget: { total: 50000, spent: 0 },
+      materials: ["Design system", "Cloud hosting", "QA devices"],
+      milestones: [
+        { name: "Scope approved", date: todayIso(), done: true },
+        { name: "Planning review", date: nextDate(7), done: false },
+        {
+          name: "Delivery checkpoint",
+          date: payload.dueDate || nextDate(21),
+          done: false,
+        },
+      ],
+      risks: [
+        {
+          title: "Timeline compression",
+          level: "Medium",
+          mitigation:
+            "Review dependencies weekly and keep buffer for critical tasks.",
+        },
+      ],
+      documents: [
+        { name: "Project charter", icon: "fa-file-contract" },
+        { name: "Requirements brief", icon: "fa-file-lines" },
+      ],
+      alerts: ["Milestone review pending", "Budget baseline created"],
       columns: DEFAULT_COLUMNS.map((columnName) => ({
         id: createId(),
         name: columnName,
@@ -732,6 +968,7 @@ function findTask(taskId) {
 function renderReports() {
   const projects = userProjects();
   els.reportsStats.innerHTML = renderStats(getWorkspaceStats(projects));
+  els.analyticsPanels.innerHTML = renderAnalyticsPanels(projects);
   els.activityList.innerHTML = state.data.activity.length
     ? state.data.activity
         .slice(0, 15)
@@ -745,6 +982,45 @@ function renderReports() {
         )
         .join("")
     : '<div class="empty-state">No activity recorded yet.</div>';
+}
+
+function renderAnalyticsPanels(projects) {
+  const stats = getWorkspaceStats(projects);
+  return `
+    <article class="analytics-panel">
+      <div class="panel-heading">
+        <span><i class="fa-solid fa-chart-line"></i></span>
+        <div>
+          <p class="eyebrow">Performance</p>
+          <h3>${stats.averageProgress}% average completion</h3>
+        </div>
+      </div>
+      ${renderMeter(stats.averageProgress)}
+      <p>${stats.doneTasks} completed tasks across ${stats.projects} projects.</p>
+    </article>
+    <article class="analytics-panel">
+      <div class="panel-heading">
+        <span><i class="fa-solid fa-wallet"></i></span>
+        <div>
+          <p class="eyebrow">Financials</p>
+          <h3>${stats.budgetUsed}% budget consumed</h3>
+        </div>
+      </div>
+      ${renderMeter(stats.budgetUsed)}
+      <p>${currency(stats.budgetSpent)} spent from ${currency(stats.budgetTotal)} planned.</p>
+    </article>
+    <article class="analytics-panel">
+      <div class="panel-heading">
+        <span><i class="fa-solid fa-stopwatch"></i></span>
+        <div>
+          <p class="eyebrow">Time Tracking</p>
+          <h3>${stats.tracked} hours logged</h3>
+        </div>
+      </div>
+      ${renderMeter(stats.estimate ? Math.min(100, Math.round((stats.tracked / stats.estimate) * 100)) : 0)}
+      <p>${stats.estimate} hours estimated for active delivery work.</p>
+    </article>
+  `;
 }
 
 function renderStats(stats) {
@@ -769,12 +1045,65 @@ function getWorkspaceStats(projects) {
   const allTasks = projects.flatMap((project) =>
     project.columns.flatMap((column) => column.tasks),
   );
+  const progressValues = projects.map(
+    (project) => getProjectStats(project).progress,
+  );
+  const budgetTotal = projects.reduce(
+    (sum, project) => sum + Number(project.budget?.total || 0),
+    0,
+  );
+  const budgetSpent = projects.reduce(
+    (sum, project) => sum + Number(project.budget?.spent || 0),
+    0,
+  );
 
   return {
     projects: projects.length,
     active: projects.filter((project) => project.status === "Active").length,
     tasks: allTasks.length,
+    doneTasks: projects.reduce(
+      (sum, project) => sum + getProjectStats(project).done,
+      0,
+    ),
     overdue: allTasks.filter((task) => isOverdue(task.dueDate)).length,
+    milestones: projects.reduce(
+      (sum, project) => sum + safeList(project.milestones).length,
+      0,
+    ),
+    members: new Set(projects.flatMap((project) => safeList(project.members)))
+      .size,
+    comments: allTasks.reduce(
+      (sum, task) => sum + safeList(task.comments).length,
+      0,
+    ),
+    highRisks: projects.reduce(
+      (sum, project) =>
+        sum +
+        safeList(project.risks).filter((risk) => risk.level === "High").length,
+      0,
+    ),
+    documents: projects.reduce(
+      (sum, project) => sum + safeList(project.documents).length,
+      0,
+    ),
+    alerts: projects.reduce(
+      (sum, project) => sum + safeList(project.alerts).length,
+      0,
+    ),
+    estimate: allTasks.reduce(
+      (sum, task) => sum + Number(task.estimate || 0),
+      0,
+    ),
+    tracked: allTasks.reduce((sum, task) => sum + Number(task.tracked || 0), 0),
+    averageProgress: progressValues.length
+      ? Math.round(
+          progressValues.reduce((sum, value) => sum + value, 0) /
+            progressValues.length,
+        )
+      : 0,
+    budgetTotal,
+    budgetSpent,
+    budgetUsed: budgetTotal ? Math.round((budgetSpent / budgetTotal) * 100) : 0,
   };
 }
 
@@ -794,6 +1123,7 @@ function getProjectStats(project) {
       (sum, task) => sum + Number(task.estimate || 0),
       0,
     ),
+    tracked: allTasks.reduce((sum, task) => sum + Number(task.tracked || 0), 0),
   };
 }
 
@@ -879,6 +1209,7 @@ function seedData() {
     priority: "High",
     dueDate: nextDate(2),
     estimate: 3,
+    tracked: 1.5,
     labels: ["Planning"],
     checklist: [
       { text: "Review backlog", done: false },
@@ -897,6 +1228,7 @@ function seedData() {
     priority: "Medium",
     dueDate: nextDate(5),
     estimate: 6,
+    tracked: 4,
     labels: ["UI", "Analytics"],
     checklist: [{ text: "Wire summary cards", done: true }],
     comments: [],
@@ -912,6 +1244,7 @@ function seedData() {
     priority: "Low",
     dueDate: nextDate(-1),
     estimate: 2,
+    tracked: 2,
     labels: ["Setup"],
     checklist: [{ text: "Create board", done: true }],
     comments: [],
@@ -938,6 +1271,36 @@ function seedData() {
         status: "Active",
         dueDate: nextDate(14),
         members: ["John Doe", "Priya Shah", "Miguel Santos"],
+        budget: { total: 85000, spent: 42800 },
+        materials: ["Design system", "Analytics workspace", "QA devices"],
+        milestones: [
+          { name: "Scope locked", date: nextDate(-5), done: true },
+          { name: "Design review", date: nextDate(3), done: false },
+          { name: "QA freeze", date: nextDate(9), done: false },
+          { name: "Launch", date: nextDate(14), done: false },
+        ],
+        risks: [
+          {
+            title: "Content approvals may slip",
+            level: "High",
+            mitigation: "Assign owners and review blockers in daily standup.",
+          },
+          {
+            title: "Analytics tags incomplete",
+            level: "Medium",
+            mitigation: "Validate tracking checklist before QA freeze.",
+          },
+        ],
+        documents: [
+          { name: "Project charter", icon: "fa-file-contract" },
+          { name: "Launch checklist", icon: "fa-clipboard-check" },
+          { name: "Brand assets", icon: "fa-folder-open" },
+        ],
+        alerts: [
+          "Design review due soon",
+          "High risk needs mitigation owner",
+          "Budget burn above 50%",
+        ],
         createdAt: todayIso(),
         updatedAt: todayIso(),
         columns,
@@ -1014,6 +1377,36 @@ function statusColor(status) {
     "On Hold": "orange",
     Completed: "green",
   }[status];
+}
+
+function safeList(value) {
+  return Array.isArray(value) ? value : [];
+}
+
+function getResourceSummary(project) {
+  const members = safeList(project.members).length || 1;
+  const materials = safeList(project.materials);
+  const allocation = Math.min(100, members * 18 + materials.length * 7);
+  return {
+    materials: materials.length ? materials.join(", ") : "Core workspace",
+    allocation,
+  };
+}
+
+function currency(value) {
+  return new Intl.NumberFormat("en", {
+    style: "currency",
+    currency: "USD",
+    maximumFractionDigits: 0,
+  }).format(Number(value || 0));
+}
+
+function formatShortDate(value) {
+  if (!value) return "TBD";
+  return new Intl.DateTimeFormat("en", {
+    month: "short",
+    day: "numeric",
+  }).format(new Date(`${value}T00:00:00`));
 }
 
 function initials(name = "?") {

@@ -17,60 +17,120 @@
   <body>
     <div class="app-shell">
       <section class="auth-container" id="auth-container">
-        <div class="brand-lockup">
-          <span class="brand-mark"
-            ><i class="fa-solid fa-diagram-project"></i
-          ></span>
-          <div>
-            <h1>ProjectFlow</h1>
-            <p>Plan work, track progress, and keep delivery visible.</p>
+        <div class="auth-card">
+          <div class="brand-lockup">
+            <span class="brand-mark"
+              ><i class="fa-solid fa-diagram-project"></i
+            ></span>
+            <div>
+              <h1>ProjectFlow</h1>
+              <p>
+                Plan, schedule, collaborate, and deliver from one command
+                center.
+              </p>
+            </div>
+          </div>
+
+          <div class="auth-form" id="login-form">
+            <div>
+              <p class="eyebrow">Secure workspace</p>
+              <h2>Welcome back</h2>
+            </div>
+            <label>
+              Email
+              <input type="email" id="login-email" value="john@example.com" />
+            </label>
+            <label>
+              Password
+              <input type="password" id="login-password" value="123456" />
+            </label>
+            <button id="login-btn" class="primary-btn">
+              <i class="fa-solid fa-right-to-bracket"></i>
+              Login
+            </button>
+            <p>Need an account? <a href="#" id="show-register">Register</a></p>
+          </div>
+
+          <div class="auth-form hidden" id="register-form">
+            <div>
+              <p class="eyebrow">Create workspace</p>
+              <h2>Start planning</h2>
+            </div>
+            <label>
+              Name
+              <input type="text" id="register-name" placeholder="Your name" />
+            </label>
+            <label>
+              Email
+              <input
+                type="email"
+                id="register-email"
+                placeholder="you@example.com"
+              />
+            </label>
+            <label>
+              Password
+              <input
+                type="password"
+                id="register-password"
+                placeholder="Create a password"
+              />
+            </label>
+            <button id="register-btn" class="primary-btn">
+              <i class="fa-solid fa-user-plus"></i>
+              Register
+            </button>
+            <p>Already registered? <a href="#" id="show-login">Login</a></p>
           </div>
         </div>
 
-        <div class="auth-form" id="login-form">
-          <h2>Login</h2>
-          <label>
-            Email
-            <input type="email" id="login-email" value="john@example.com" />
-          </label>
-          <label>
-            Password
-            <input type="password" id="login-password" value="123456" />
-          </label>
-          <button id="login-btn" class="primary-btn">
-            <i class="fa-solid fa-right-to-bracket"></i>
-            Login
-          </button>
-          <p>Need an account? <a href="#" id="show-register">Register</a></p>
-        </div>
-
-        <div class="auth-form hidden" id="register-form">
-          <h2>Register</h2>
-          <label>
-            Name
-            <input type="text" id="register-name" placeholder="Your name" />
-          </label>
-          <label>
-            Email
-            <input
-              type="email"
-              id="register-email"
-              placeholder="you@example.com"
-            />
-          </label>
-          <label>
-            Password
-            <input
-              type="password"
-              id="register-password"
-              placeholder="Create a password"
-            />
-          </label>
-          <button id="register-btn" class="primary-btn">
-            <i class="fa-solid fa-user-plus"></i>
-            Register
-          </button>
-          <p>Already registered? <a href="#" id="show-login">Login</a></p>
+        <div class="auth-visual" aria-hidden="true">
+          <div class="orbit orbit-one"></div>
+          <div class="orbit orbit-two"></div>
+          <div class="planning-board">
+            <div class="mini-topline">
+              <span></span>
+              <span></span>
+              <span></span>
+            </div>
+            <div class="mini-timeline">
+              <i class="fa-solid fa-flag-checkered"></i>
+              <span></span>
+              <i class="fa-solid fa-calendar-days"></i>
+              <span></span>
+              <i class="fa-solid fa-chart-line"></i>
+            </div>
+            <div class="mini-kanban">
+              <div>
+                <strong>Plan</strong>
+                <span></span>
+                <span></span>
+              </div>
+              <div>
+                <strong>Build</strong>
+                <span></span>
+                <span></span>
+              </div>
+              <div>
+                <strong>Launch</strong>
+                <span></span>
+                <span></span>
+              </div>
+            </div>
+            <div class="mini-metrics">
+              <span><i class="fa-solid fa-clock"></i> 128h</span>
+              <span><i class="fa-solid fa-wallet"></i> 72%</span>
+              <span><i class="fa-solid fa-bell"></i> 4</span>
+            </div>
+          </div>
+          <div class="floating-chip chip-schedule">
+            <i class="fa-solid fa-chart-gantt"></i>
+            Milestone synced
+          </div>
+          <div class="floating-chip chip-risk">
+            <i class="fa-solid fa-shield-halved"></i>
+            Risk reviewed
+          </div>
         </div>
       </section>
 
@@ -121,6 +181,7 @@
 
           <section class="dashboard" id="projects-view">
             <div class="stats-grid" id="workspace-stats"></div>
+            <div class="module-grid" id="feature-modules"></div>
             <div class="toolbar">
               <label class="search-field">
                 <i class="fa-solid fa-magnifying-glass"></i>
@@ -146,6 +207,7 @@
 
           <section class="reports-view hidden" id="reports-view">
             <div class="stats-grid" id="reports-stats"></div>
+            <div class="analytics-grid" id="analytics-panels"></div>
             <div class="activity-panel">
               <div class="section-heading">
                 <h3>Recent Activity</h3>
@@ -185,6 +247,13 @@
             </div>
 
             <div class="board-summary" id="board-summary"></div>
+
+            <div class="project-intelligence">
+              <div class="planning-panel" id="planning-panel"></div>
+              <div class="resource-panel" id="resource-panel"></div>
+              <div class="risk-panel" id="risk-panel"></div>
+              <div class="document-panel" id="document-panel"></div>
+            </div>
 
             <div class="toolbar board-toolbar">
               <label class="search-field">
